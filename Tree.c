@@ -1,6 +1,6 @@
 //Header goes here
 //Tim's changed the file! OMG!
-//
+//This is my second comment!!! LOL
 #include <stdlib.h>
 #include <string.h>
 #include "Tree.h"
