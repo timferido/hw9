@@ -1,16 +1,16 @@
-/****************************************************************************
+/*******************************************************************************
 
                                                         Adam Kabbara, cs12xbr
-														Tim Ferido, cs12xaf
+							Tim Ferido, cs12xaf
                                                         CSE 12, SS2 
                                                         09-06-2017
                                 Assignment Nine
 
 File Name:      Tree.c
 Description:    This file contains the implementations for a binary tree.
-				It includes functionality for persistent data.
-				Debug option is also included.
-****************************************************************************/
+		It includes functionality for persistent data.
+		Debug option is also included.
+*******************************************************************************/
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
@@ -43,9 +43,57 @@ long Tree<Whatever>::operation = 0;
 
 #define THRESHOLD 2
 
+/*------------------------------------------------------------------------------
+Function Name		<<
+Purpose			operator overload function declaration.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 ostream & operator << (ostream &, const TNode<Whatever> &);
 
+/*------------------------------------------------------------------------------
+Class Name		TNode
+Description		This class defines the object to make up the tree and 
+			its member values
+Members			Whatever data:
+				the data member field of the node
+			long height:
+				the height of the specific node in the tree
+			long balance:
+				the difference of the heights between the left
+				and right nodes of a specific noed in the tree
+			offset left:
+				where the left node exists in the datafile
+			offset right:
+				where the right node exists in the datafile
+			offset this_position:
+				where the node's memory begins in the 
+				datafile
+			TNode():
+				default constructor
+			TNode(Whatever & element):
+				constructor that takes in an element and
+				creates a new node
+			TNode (const offset &, element):
+				constructor that reads a node from disk
+			TNode (Whatever &, fstream *, long &):
+				constructor that adds a new node to disk
+			Insert:
+				inserts a new node or existing node into
+				memory tree
+			Read:
+				reads a node from the disk
+			Remove:
+				'removes' a node from the disk
+			ReplaceAndRemoveMin:
+				replaces the current node with its successor 
+				node
+			SetHeightAndBalance:
+				updates the node's height and balance
+			Write:
+				update node to disk
+			Write_AllTNodes:
+				displays all node on disk
+------------------------------------------------------------------------------*/
 template <class Whatever>
 struct  TNode {
 // friends:
@@ -81,50 +129,48 @@ struct  TNode {
 	ostream & Write_AllTNodes (ostream &, fstream *) const;
 };
 
-/*----------------------------------------------------------------------
+/*------------------------------------------------------------------------------
 Function Name:         Tree<Whatever> :: Set_Debug_Off
 Purpose:               Set Debugger off.
 Description:           The function sets the debugger messeges off.
 Input:                 No input value.
 Result:                No return value. Debug messages don't show
-----------------------------------------------------------------------*/
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void Tree<Whatever> :: Set_Debug_Off () {
 
-	debug_on = false; //Debuger turned off
+	debug_on = false; //Debugger turned off
 }
 
-/*----------------------------------------------------------------------
+/*------------------------------------------------------------------------------
 Function Name:         Tree<Whatever> :: Set_Debug_On
 Purpose:               Set Debugger on.
 Description:           The function sets the debugger messeges on.
 Input:                 No input value.
 Result:                No return value. Debug messages show.
-----------------------------------------------------------------------*/
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void Tree<Whatever> :: Set_Debug_On() {
 
-	debug_on = true; //Debuger turned on
+	debug_on = true; //Debugger turned on
 }
 
-/*----------------------------------------------------------------------
-Function Name:         Insert
-Purpose:               Insert an element into the binary tree.
-Description:           The function exists Insert an element into the binary 
-					   tree. Inserts at the root TNode if Tree is empty, 
-					   otherwise delegates to TNode's Insert.
-Input:                 element: expected to be the data stored in the TNode.
-					   They must be of the same type as the rest of the object
-					   present in the tree.
-Result:                Returns true or false indicating success of insertion
-----------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------
+Function Name:		Insert
+Purpose:		Insert an element into the binary tree.
+Description:		The function exists Insert an element into the binary 
+			tree. Inserts at the root TNode if Tree is empty, 
+			otherwise delegates to TNode's Insert.
+Input:			element: expected to be the data stored in the TNode.
+			They must be of the same type as the rest of the object
+			present in the tree.
+Result:			Returns true or false indicating success of insertion
+------------------------------------------------------------------------------*/
 template <class Whatever>
 unsigned long Tree<Whatever> :: Insert (Whatever & element) {
 
 	//Check if first insert 
 	if (!occupancy) {
-
-		
 
 		// create a new node
 		TNode<Whatever> rootNode(element, fio, occupancy);
@@ -140,115 +186,175 @@ unsigned long Tree<Whatever> :: Insert (Whatever & element) {
 		//calling read constructor
 		TNode<Whatever> readRootNode(root, fio);
 
-		
 		//call tnode insert on new node
 		return readRootNode.Insert(element, fio, occupancy, root);
-
 	} 
 }
 
+/*------------------------------------------------------------------------------
+Function Name		ReplaceAndRemoveMin
+Purpose			This function exists to handle removal of node with two
+			children
+Description		called when removing a TNode with 2 children. It
+			replaces that tnode with the minimum tnode
+			in its right subtree or successor node, to 
+			maintain structure of tree.
+Input			targetTNode: the node to remove
+			fio: the filestream to write or read to
+			PositionInParent: the offset position in the disk 
+			where the current node exists
+Output			The current node is removed and the successor node is
+			put in its place.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void TNode<Whatever> :: ReplaceAndRemoveMin (TNode<Whatever> & targetTNode, 
 	fstream * fio, offset & PositionInParent) {
-	/* YOUR CODE GOES HERE */
+	/*TODO*/
 }
 
+/*------------------------------------------------------------------------------
+Function Name		Remove
+Purpose			This is TNode's remove, that is responsible for
+			removing a node from the datafile
+Description		The position of the node on the disk is no longer 
+			referenced to and it is 'removed' from the tree
+			structure.
+Input			elementTNode: the tnode to be removed
+			fio: the filestream to read and write to
+			occupancy: the number of elements in the tree
+			PositionInParent: the offset position of the current
+			node in the datafile
+Output			The tnode in the datafile is 'removed' from the tree
+			structure.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 	fstream * fio, long & occupancy, offset & PositionInParent,
 	long fromSHB) {
-	/* YOUR CODE GOES HERE */
+	/*TODO*/
 	return;
 }
 	
+/*------------------------------------------------------------------------------
+Function Name		Remove
+Purpose			This is Tree's remove that is responsible for delegating
+			to TNode's remove 
+Description		This function delegates to tnode's remove in order to 
+			remove specific nodes.
+Input			element: the node to be removed from the tree
+Output			The tnode's remove is called
+------------------------------------------------------------------------------*/
 template <class Whatever>
 unsigned long Tree<Whatever> :: Remove (Whatever & element) {
-	/* YOUR CODE GOES HERE */
+	/*TODO*/
 	return 0;
 }
 
+/*------------------------------------------------------------------------------
+Function Name		SetHeightAndBalance
+Purpose			this function exists to update the height and balance
+			of the current node
+Description		updates the height and balance of the current
+			tnode by comparing the heights of the left and right
+			children
+Input			fio: the filestream to be written to
+			PositionInParent: the offset position of the current
+			node in the datafile.
+Output			The heights and balances of the current node are updated
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void TNode<Whatever> :: SetHeightAndBalance (fstream * fio,
 	offset & PositionInParent) {
-	/* YOUR CODE GOES HERE */
+	/*TODO*/
 }
-/*----------------------------------------------------------------------
+
+/*------------------------------------------------------------------------------
 Function Name:		GetCost 
-Purpose:            gets the value of Tree<Whatever>::cost variable 
-Description:        this funciton exists to get the value of Tree<Whatever>
-					::cost variable
-Input:              no input values. 
-Result:             returns value of Tree<Whatever>::cost 
-----------------------------------------------------------------------*/
+Purpose:		gets the value of Tree<Whatever>::cost variable 
+Description:		this funciton exists to get the value of Tree<Whatever>
+			::cost variable
+Input:			no input values. 
+Result:			returns value of Tree<Whatever>::cost 
+------------------------------------------------------------------------------*/
 template <class Whatever>
 long Tree <Whatever> :: GetCost () {
 
 	return cost;
 }
-/*----------------------------------------------------------------------
+/*------------------------------------------------------------------------------
 Function Name:		GetOperation
-Purpose:            gets the value of Tree<Whatever>::operation variable 
-Description:        this funciton exists to get the value of Tree<Whatever>
-					::operation variable
-Input:              no input values. 
-Result:             returns value of Tree<Whatever>::operation
-----------------------------------------------------------------------*/
+Purpose:		gets the value of Tree<Whatever>::operation variable 
+Description:		this funciton exists to get the value of Tree<Whatever>
+			::operation variable
+Input:			no input values. 
+Result:			returns value of Tree<Whatever>::operation
+------------------------------------------------------------------------------*/
 template <class Whatever>
 long Tree <Whatever> :: GetOperation () {
 
 	return operation;
 }
-/*----------------------------------------------------------------------
+/*------------------------------------------------------------------------------
 Function Name:		IncrementCost	
-Purpose:			Increments the value of the Tree<Whatever>::cost variable 
-Description:        this funciton exists increment the value Tree<Whatever>
-					::operation variable. This should be called when a
-					read or write to the disk occurs.
-Input:              no input values. 
-Result:				no return values.
-					increments value of Tree<Whatever>::cost
-----------------------------------------------------------------------*/
+Purpose:		Increments the value of the Tree<Whatever>::cost 
+			variable 
+Description:		this funciton exists increment the value Tree<Whatever>
+			::operation variable. This should be called when a
+			read or write to the disk occurs.
+Input:			no input values. 
+Result:			no return values.
+			increments value of Tree<Whatever>::cost
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void Tree <Whatever> :: IncrementCost () {
 
 	cost++;
 }
-/*----------------------------------------------------------------------
+/*------------------------------------------------------------------------------
 Function Name:		IncrementOperation
-Purpose:			Increments the value of the Tree<Whatever>::operation 
-					variable 
-Description:        this funciton exists increment the value Tree<Whatever>
-					::operation variable. This should be called when a
-					tree operation occurs (insert, lookup, and remove).	
-Input:              no input values. 
-Result:             no return value. 
-					increments value of Tree<Whatever>::operation
-----------------------------------------------------------------------*/
+Purpose:		Increments the value of the Tree<Whatever>::operation 
+			variable 
+Description:		this funciton exists increment the value Tree<Whatever>
+			::operation variable. This should be called when a
+			tree operation occurs (insert, lookup, and remove).	
+Input:			no input values. 
+Result:			no return value.  
+			increments value of Tree<Whatever>::operation
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void Tree <Whatever> :: IncrementOperation () {
 
 	operation++;
 }
 
+/*------------------------------------------------------------------------------
+Function Name		ResetRoot
+Purpose			This function exists to reset the root datafield of this
+			tree to be at the end of the datafile. 
+Description		This should be called when the last tnode has been 
+			removed from the tree.
+Input			no input values
+Output			the root is moved to the end of the datafile.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void Tree <Whatever> :: ResetRoot () {
         /* YOUR CODE GOES HERE */       
 }
 
-/*----------------------------------------------------------------------
-Function Name:         Insert
-Purpose:               Insert an element into the binary tree.
-Description:           The function exists Insert an element into the binary 
-					   tree.
-Input:                 element: expected to be the data stored in the TNode.
-					   They must be of the same type as the rest of the object
-					   fio: expected to be the filestream corresponding to 
-					   the datafile where the Tree is stored on disk.
-					   PositionInParent: expected to be a reference to the
-					   TNode position in the parent TNode used to get to
-					   the current TNode's offset in the datafile.
-Result:                Returns true or false indicating success of insertion.
-----------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------
+Function Name:		Insert
+Purpose:		Insert an element into the binary tree.  
+Description:		The function exists Insert an element into the binary 
+			tree.
+Input:			element: expected to be the data stored in the TNode.
+			They must be of the same type as the rest of the object
+			fio: expected to be the filestream corresponding to 
+			the datafile where the Tree is stored on disk.
+			PositionInParent: expected to be a reference to the
+			TNode position in the parent TNode used to get to
+			the current TNode's offset in the datafile.
+Result:			Returns true or false indicating success of insertion.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 unsigned long TNode<Whatever> :: Insert (Whatever & element, fstream * fio,
 	long & occupancy, offset & PositionInParent) {
@@ -296,30 +402,37 @@ unsigned long TNode<Whatever> :: Insert (Whatever & element, fstream * fio,
 	SetHeightAndBalance(fio, PositionInParent);
 
 	return true;
-
 }
 
+/*------------------------------------------------------------------------------
+Function Name		Lookup
+Purpose			Searches for an element in the tree.
+Description		This function takes in an element and recursively calls
+			until the element is found
+Input			element: the element to be searched for
+Output			true or false indicating success of look up.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 unsigned long Tree<Whatever> :: Lookup (Whatever & element) const {
 	/* YOUR CODE GOES HERE */
 	return 0;
 }
 
-/*----------------------------------------------------------------------
-Function Name:      Read
-Purpose:			Reads the current tnode on the datafile into memory.
+/*------------------------------------------------------------------------------
+Function Name:		Read
+Purpose:		Reads the current tnode on the datafile into memory.
 Description:		This function exists to read the current tnode on
-					the datafile for use. The TNode is read from 
-					position, the tnode's information in the datafile
-					overwrites this TNode's data.
-Input:              position: expected to be the offset in the data 
-					corresponding to the position of the tnode we wish
-					to read into memory.
-					fio: expected to be the file stream corresponding to
-					the datafile where the tree is stored on disk
-Result:				no return value. TNode is read from datafile to 
-					memory.
-----------------------------------------------------------------------*/
+			the datafile for use. The TNode is read from 
+			position, the tnode's information in the datafile
+			overwrites this TNode's data.
+Input:			position: expected to be the offset in the data 
+			corresponding to the position of the tnode we wish
+			to read into memory.
+			fio: expected to be the file stream corresponding to
+			the datafile where the tree is stored on disk
+Result:			no return value. TNode is read from datafile to 
+			memory.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void TNode<Whatever> :: Read (const offset & position, fstream * fio) {
 	
@@ -335,18 +448,18 @@ void TNode<Whatever> :: Read (const offset & position, fstream * fio) {
 	}
 }
 
-/*----------------------------------------------------------------------
-Function Name:      TNode
-Purpose:			called when reading a tnode present on disk
-Description:        This function exists to read a tnode present on the
-					disk into memory.
-Input:              position: expected to be the offset in the data 
-					corresponding to the position of the tnode we wish
-					to read into memory.
-					fio: expected to be the file stream corresponding to
-					the datafile where the tree is stored on disk
-Result:				No return value.
-----------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------
+Function Name:		TNode
+Purpose:		called when reading a tnode present on disk
+Description:		This function exists to read a tnode present on the
+			disk into memory.
+Input:			position: expected to be the offset in the data 
+			corresponding to the position of the tnode we wish
+			to read into memory.
+			fio: expected to be the file stream corresponding to
+			the datafile where the tree is stored on disk
+Result:			No return value.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 TNode<Whatever> :: TNode (const offset & position, fstream * fio) {
 
@@ -354,20 +467,20 @@ TNode<Whatever> :: TNode (const offset & position, fstream * fio) {
 	Read(position, fio);
 }
 
-/*----------------------------------------------------------------------
-Function Name:      TNode
-Purpose:			called when creating a TNode for the first time.
-Description:        This function exists to be called when creating a
-					TNode for the first time.
-Input:              element: The data to be stored in the TNode. Must
-					be the same type as the rest of the objects present
-					in the tree.
-					fio: expected to be the file stream corresponding to
-					the datafile where the tree is stored on disk
-					occupancy: Expected to be a reference to the occupancy
-					to the tree to which the new node is being added.
-Result:				No return value.
-----------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------
+Function Name:		TNode
+Purpose:		called when creating a TNode for the first time.
+Description:		This function exists to be called when creating a
+			TNode for the first time.
+Input:			element: The data to be stored in the TNode. Must
+			be the same type as the rest of the objects present
+			in the tree.
+			fio: expected to be the file stream corresponding to
+			the datafile where the tree is stored on disk
+			occupancy: Expected to be a reference to the occupancy
+			to the tree to which the new node is being added.
+Result:			No return value.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 TNode<Whatever> :: TNode (Whatever & element, fstream * fio, long & occupancy): 
 		data (element), height (0), balance (0), left (0), right (0) {
@@ -382,16 +495,16 @@ TNode<Whatever> :: TNode (Whatever & element, fstream * fio, long & occupancy):
 	occupancy++;
 }
 
-/*----------------------------------------------------------------------
-Function Name:      Write
-Purpose:			Writes the TNode object to disk at this_position in the
-					datafile.
-Description:        This function exists writes the TNode object to disk at 
-					this_position in the datafile.
-Input:              fio: expected to be the file stream corresponding to
-					the datafile where the tree is stored on disk
-Result:				No return value.
-----------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------
+Function Name:		Write
+Purpose:		Writes the TNode object to disk at this_position in the
+			datafile.
+Description:		This function exists writes the TNode object to disk at 
+			this_position in the datafile.
+Input:			fio: expected to be the file stream corresponding to
+			the datafile where the tree is stored on disk
+Result:			No return value.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 void TNode<Whatever> :: Write (fstream * fio) const {
 
@@ -408,19 +521,19 @@ void TNode<Whatever> :: Write (fstream * fio) const {
 }
 
 /*------------------------------------------------------------------------------
-Function Name:      Tree<Whatever> :: Tree
-Purpose:			Called when creating a Tree. Allocates memory for
-					the tree
-Description:        Guarantee initialization of occupancy and root. It 
-					also initializes the tree_count using a static 
-					counter.
-Input:              No input value.
-Result:             No return value.
+Function Name:		Tree<Whatever> :: Tree
+Purpose:		Called when creating a Tree. Allocates memory for
+			the tree
+Description:		Guarantee initialization of occupancy and root. It 
+			also initializes the tree_count using a static 
+			counter.
+Input:			No input value.
+Result:			No return value.
 ------------------------------------------------------------------------------*/
 template <class Whatever>
 Tree<Whatever> :: Tree (const char * datafile) :
-	fio (new fstream (datafile, ios :: out | ios :: in)), occupancy(0), root(0),
-	tree_count(0) {
+	fio (new fstream (datafile, ios :: out | ios :: in)), occupancy(0), 
+	root(0), tree_count(0) {
 
 	//one more tree
 	tree_count++;
@@ -448,11 +561,10 @@ Tree<Whatever> :: Tree (const char * datafile) :
 	//read root and occupancy
 	else {
 		
-		//
+		//read existing root and occupancy from disk
 		fio->seekp(0, ios::beg);
 		fio->read((char*) & root, sizeof(root));
 		fio->read((char*) & occupancy, sizeof(occupancy));
-
 	}
 }
 
@@ -485,6 +597,15 @@ Tree<Whatever> :: ~Tree (void)
 
 }
 
+/*------------------------------------------------------------------------------
+Function Name		<<
+Purpose			This function exists to overload the << opeartor
+Description		This function writes the member fields of the node to 
+			the stream in a formatted output.
+Input			stream: the stream to write to
+			nnn: the node to display the information of to stream
+Output			The node's member fields are written to stream.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 ostream & operator << (ostream & stream, const TNode<Whatever> & nnn) {
 	stream << "at height:  :" << nnn.height << " with balance:  "
@@ -531,6 +652,17 @@ ostream & Tree<Whatever> :: Write (ostream & stream) const
 	return stream;
 }
 
+/*------------------------------------------------------------------------------
+Function Name		Write_AllTNodes
+Purpose			This function exists to display all the tnodes on the 
+			disk
+Description		This function writes the nodes by reading them from the
+			disk if its left or right child exists and then
+			recursively writing the left child or right child.
+Input			stream: the stream to write to
+			fio: the file stream to read from
+Output			The tree on the disk is written out.
+------------------------------------------------------------------------------*/
 template <class Whatever>
 ostream & TNode<Whatever> ::
 Write_AllTNodes (ostream & stream, fstream * fio) const {
