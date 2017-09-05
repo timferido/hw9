@@ -121,14 +121,10 @@ Result:                Returns true or false indicating success of insertion
 template <class Whatever>
 unsigned long Tree<Whatever> :: Insert (Whatever & element) {
 
-	//Check if first insert TODO: might be 16
+	//Check if first insert 
 	if (!occupancy) {
 
-		//Debug messages
-		if (debug_on) {
-			
-			cerr <<  COST_WRITE << (const char *)(element) << "]\n";
-		}
+		
 
 		// create a new node
 		TNode<Whatever> rootNode(element, fio, occupancy);
@@ -257,13 +253,6 @@ template <class Whatever>
 unsigned long TNode<Whatever> :: Insert (Whatever & element, fstream * fio,
 	long & occupancy, offset & PositionInParent) {
 
-	//Debug messages
-	if (Tree<Whatever>::debug) {
-		
-		cerr <<  "[Tree " << tree_count << COMPARE << (const char *)(element) 
-			 << AND << (const char *)(PositionInParent->data) << "]\n";
-	}
-
 	//Check if it is a duplicate
 	if (data == element) {
 		
@@ -273,51 +262,38 @@ unsigned long TNode<Whatever> :: Insert (Whatever & element, fstream * fio,
 	//Check if it should got left
 	else if (element < data) {
 		
-		if (left == NULL) { 
-
-			//Debug messages
-			if (Tree<Whatever>::debug) {
-				
-				cerr <<  "[Tree " << tree_count << INSERT 
-					 << (const char *)(element) << "]\n";
-			}
+		if (left == 0) { 
 
 			//Create a new node to the left of the parent
-			left = new TNode<Whatever>(element, *this);
-			//left = 
+			TNode<Whatever> leftNode(element, fio, occupancy);
+			left = leftNode.this_position;
 		}
 		//Go left
 		else {
 			
-			left->Insert(element, left);
-			// TNode<Whatever> readNode(element, fio);
-			// readNode.Insert (element, fio, occupancy, root);
+			TNode<Whatever> readNode(left, fio);
+			readNode.Insert (element, fio, occupancy, left);
 		}
 	}
 	//Check right side
 	else {
 		
-		if (right == NULL) { 
+		if (right == 0) { 
 			
-			//Debug messages
-			if (Tree<Whatever>::debug) {
-				
-				cerr <<  "[Tree " << tree_count << INSERT 
-					 << (const char *)(element) << "]\n";
-			}
-
 			//Create a new node to the right of the parent
-			right = new TNode<Whatever>(element, *this);
+			TNode<Whatever> rightNode(element, fio, occupancy);
+			right = rightNode.this_position;
 		}
 		//Go right
 		else {
 			
-			right->Insert(element, right);
+			TNode<Whatever> readNode(right, fio);
+			readNode.Insert (element, fio, occupancy, right);
 		}
 	}
 
 	//Update height and balance
-	SetHeightAndBalance(PositionInParent);
+	SetHeightAndBalance(fio, PositionInParent);
 
 	return true;
 
@@ -346,13 +322,17 @@ Result:				no return value. TNode is read from datafile to
 ----------------------------------------------------------------------*/
 template <class Whatever>
 void TNode<Whatever> :: Read (const offset & position, fstream * fio) {
-
+	
 	//get current position
 	fio->seekg(position);
 
 	//Read form the file to get the TNode
 	fio->read((char *)this, sizeof(TNode<Whatever>));
 
+	if (Tree<Whatever>::debug_on) {
+			
+		cerr <<  COST_READ << (const char *)(data) << "]\n";
+	}
 }
 
 /*----------------------------------------------------------------------
@@ -391,7 +371,7 @@ Result:				No return value.
 template <class Whatever>
 TNode<Whatever> :: TNode (Whatever & element, fstream * fio, long & occupancy): 
 		data (element), height (0), balance (0), left (0), right (0) {
-
+	
 	// seek to end
 	fio->seekp(0,ios::end);
 	this_position = fio->tellp();
@@ -421,6 +401,10 @@ void TNode<Whatever> :: Write (fstream * fio) const {
 	//Read form the file to get the TNode
 	fio->write((char *)this, sizeof(TNode<Whatever>));
 
+	if (Tree<Whatever>::debug_on) {
+			
+		cerr <<  COST_WRITE << (const char *)(data) << "]\n";
+	}
 }
 
 /*------------------------------------------------------------------------------
