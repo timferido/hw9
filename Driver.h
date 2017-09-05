@@ -49,6 +49,12 @@ class UCSDStudent {
         long studentnum;	//number for student
 
 public:
+
+	UCSDStudent () : studentnum (0) {
+
+		memset(name, '\0', sizeof(name));
+	}
+
 	/*----------------------------------------------------------------------
 	Function Name:		UCSDStudent
 	Purpose:			Initialize the data fields.
@@ -73,11 +79,10 @@ public:
 	Result:				No return studentnum.
 	----------------------------------------------------------------------*/
 	UCSDStudent (const UCSDStudent & student) {
-		memset (name, '\0', sizeof (name));
+		memset (name, '\0', sizeof(name));
 		strcpy (name, student.name);
 		studentnum = student.studentnum;
 	}
-
 	
 	/*----------------------------------------------------------------------
 	Function Name:		(overload) const char *
