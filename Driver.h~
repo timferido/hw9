@@ -75,7 +75,7 @@ public:
 	UCSDStudent (const UCSDStudent & student) {
 		memset (name, '\0', sizeof (name));
 		strcpy (name, student.name);
-		studentnum = student.studentnum;
+		value = student.value;
 	}
 
 	
