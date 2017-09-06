@@ -30,12 +30,20 @@ ostream & operator << (ostream & stream, const UCSDStudent & stu) {
                 << " with studentnum:  " << stu.studentnum;
 }
 
+const int FROM_FILE = 1;
+const int FROM_KEYBOARD = 2;
+
 int main (int argc, char * const * argv) {
 
         char buffer[BUFSIZ];
         char command;
         long number;
         char option;
+	
+	//Prepare for input from keyboard and file
+	istream * is = &cin;
+	ostream * os = &cout;
+	int readingFrom = FROM_KEYBOARD;
         
 		istream * is = &cin;
 		ostream * os = &cout;
@@ -56,18 +64,49 @@ int main (int argc, char * const * argv) {
         while (cin) {
                 command = NULL;         // reset command each time in loop
                 cout << "Please enter a command ((i)nsert, "
-                        << "(l)ookup, (r)emove, (w)rite):  ";
-                cin >> command;
+                        << "(f)file, (l)ookup, (r)emove, (w)rite):  ";
+                *is >> command;
+
+		/* check for EOF reading from file */
+		if (readingFrom == FROM_FILE) {
+			if (!*is) {
+				
+				delete is;
+				delete os;
+				
+				/* reset input and output from keyboard
+				 * to screen */
+				is = &cin;
+				os = &cout;
+				readingFrom = FROM_KEYBOARD;
+			}
+		}
 
                 switch (command) {
 				case 'f': 
 
-                case 'i': {
-                        cout << "Please enter UCSD student name to insert:  ";
-                        cin >> buffer;  // formatted input
+                case 'f': {
+                        *os << "Please enter name of ASCII file:  ";
+                        *is >> buffer;  // formatted input
 
-                        cout << "Please enter UCSD student number:  ";
-                        cin >> number;
+			if (readingFrom == FROM_FILE) {
+				delete is;
+				delete os;
+			}
+
+			/* read from file */
+			is = new ifstream (buffer);
+			os = new ofstream ("/dev/null");
+			readingFrom = FROM_FILE;
+
+                        break;
+                }
+                case 'i': {
+                        *os << "Please enter UCSD student name to insert:  ";
+                        *is >> buffer;  // formatted input
+
+                        *os << "Please enter UCSD student number:  ";
+                        *is >> number;
 
                         UCSDStudent stu (buffer, number);
 
@@ -78,8 +117,8 @@ int main (int argc, char * const * argv) {
                 case 'l': { 
                         unsigned long found;    // whether found or not
 
-                        cout << "Please enter UCSD student name to lookup:  ";
-                        cin >> buffer;  // formatted input
+                        *os << "Please enter UCSD student name to lookup:  ";
+                        *is >> buffer;  // formatted input
 
                         UCSDStudent stu (buffer, 0);
                         found = ST.Lookup (stu);
@@ -93,8 +132,8 @@ int main (int argc, char * const * argv) {
                 case 'r': { 
                         unsigned long removed;
 
-                        cout << "Please enter UCSD student name to remove:  ";
-                        cin >> buffer;  // formatted input
+                        *os << "Please enter UCSD student name to remove:  ";
+                        *is >> buffer;  // formatted input
 
                         UCSDStudent stu (buffer, 0);
                         removed = ST.Remove(stu);
