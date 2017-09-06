@@ -169,14 +169,14 @@ Result:			Returns true or false indicating success of insertion
 template <class Whatever>
 unsigned long Tree<Whatever> :: Insert (Whatever & element) {
 
+	// a tree operation is done
+	IncrementOperation();
+
 	//Check if first insert 
-	if (!occupancy) {
+	if (occupancy == 0) {
 
 		// create a new node
 		TNode<Whatever> rootNode(element, fio, occupancy);
-
-		// set root to newnode.this_position
-		//root = rootNode.this_position;
 
 		return true;
 	}
@@ -209,7 +209,33 @@ Output			The current node is removed and the successor node is
 template <class Whatever>
 void TNode<Whatever> :: ReplaceAndRemoveMin (TNode<Whatever> & targetTNode, 
 	fstream * fio, offset & PositionInParent) {
-	/*TODO*/
+
+	//Find Successor
+	if(left != 0) {
+		
+		//create a new node to call rarm
+		TNode<Whatever> leftNode(left, fio);
+
+		leftNode.ReplaceAndRemoveMin(targetTNode, fio, left);
+
+		//Fix height and Balance
+		SetHeightAndBalance(fio, PositionInParent);
+	}
+
+	//Replace
+	else {
+
+		//Replace the data
+		targetTNode.data = data;
+		
+		//Take care of the childern
+		if (right)
+			PositionInParent = right;
+
+		//Delete the TNode
+		//TODO might need to call delete, did not encode works
+		//delete this;
+	}
 }
 
 /*------------------------------------------------------------------------------
@@ -231,8 +257,102 @@ template <class Whatever>
 unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 	fstream * fio, long & occupancy, offset & PositionInParent,
 	long fromSHB) {
-	/*TODO*/
-	return;
+
+	//Base case: found node
+	if (elementTNode.data == data) {
+
+		//Store data
+		elementTNode.data = data;
+
+		//Check if leaf
+		if (left == 0 && right == 0) {
+			
+			PositionInParent = 0;	//Set TNode to 0
+		}
+		
+		//Has two children
+		else if (left != 0 && right != 0) {
+
+			// create node to call replace and remove node from
+			TNode<Whatever> rightNode(right, fio);
+			
+			//Find replacement are switch
+			rightNode.ReplaceAndRemoveMin(*this, fio, PositionInParent);
+
+			//Fix height and balance if not from SHAB
+			if (fromSHB == false) {
+
+				SetHeightAndBalance(fio, PositionInParent);
+			}
+
+			return true;
+		}
+
+		//TNode has one child
+		else {
+
+			//Check if there is a left TNode
+			if (left != 0) {
+				
+				PositionInParent = left;
+			}
+			else {
+				
+				PositionInParent = right;
+			}
+		}
+
+		//delete this TNode
+		delete this;
+
+		return true;
+	}
+
+	//Check to go left or right
+	else if (PositionInParent != 0) {
+		
+		//Call Remove form left
+		if ( elementTNode.data < data) {
+			if (left != 0) { 
+
+				//create node to call remove from left
+				TNode<Whatever> leftNode(left, fio);
+
+				leftNode.Remove(elementTNode, fio, occupancy, PositionInParent, 
+					fromSHB);
+			}
+			//Not found
+			else {
+				
+				return false;
+			}
+		}
+		
+		//Call Remove from right
+		else {
+
+			if (right != 0) {
+			
+				// create right node to remove from
+				TNode<Whatever> rightNode(right, fio);
+
+				rightNode.Remove(elementTNode, fio, occupancy, PositionInParent,
+					fromSHB);
+			}
+			//Not found
+			else {
+				
+				return false;	
+			}
+		}
+	}
+	//Fix height
+	if (fromSHB == false) {
+
+		SetHeightAndBalance(fio, PositionInParent);
+	}
+
+	return true;
 }
 	
 /*------------------------------------------------------------------------------
@@ -246,8 +366,35 @@ Output			The tnode's remove is called
 ------------------------------------------------------------------------------*/
 template <class Whatever>
 unsigned long Tree<Whatever> :: Remove (Whatever & element) {
-	/*TODO*/
-	return 0;
+
+	long return_value;	//Return value for the Remove function
+
+	// a tree operation is done
+	IncrementOperation();
+
+	//Check if tree is empty
+	if (occupancy == 0) {
+		
+		return false;
+	}
+
+	//Not empty so check to find and remove
+	else {
+
+		//TNode containing the data that identifies the element to remove
+		TNode<Whatever> readRootNode(root, fio);
+
+		//Create node to delete
+		TNode<Whatever> remove_node(element);
+
+		return_value = readRootNode.Remove(remove_node, fio, occupancy, root
+			, false);
+			
+		//return data
+		element = remove_node.data;
+
+		return return_value;
+	}
 }
 
 /*------------------------------------------------------------------------------
@@ -265,9 +412,11 @@ Output			The heights and balances of the current node are updated
 template <class Whatever>
 void TNode<Whatever> :: SetHeightAndBalance (fstream * fio,
 	offset & PositionInParent) {
+
 	int left_Height;	//Left node height
 	int right_Height;	//Right node height
 
+	
 
 	//Check if there is a left child
 	if (left == 0) { 
@@ -305,17 +454,29 @@ void TNode<Whatever> :: SetHeightAndBalance (fstream * fio,
 	balance = left_Height - right_Height;
 
 	//Check to see if the Tree need to be rebalanced
-/*	if (abs(balance) > THRESHOLD) {
+	if (abs(balance) > THRESHOLD) {
+
+		// create long occupancy dummy
+		long dummy = 0;
 		
 		//TNode containing the data that identifies the element to remove
-		TNode<Whatever> remove_this(fio, *this);
+		//TNode<Whatever> remove_this(PositionInParent, fio);
+		TNode<Whatever> remove_this(data);
 
 		//Remove to put in the correct place
-		Remove(*this, PositionInParent, true);
+		Remove(remove_this, fio, dummy, PositionInParent, TRUE);
 
-			//Reinsert
-			PositionInParent.Insert(remove_this.data, PositionInParent);
-		} */
+		// create read node at offset
+		TNode<Whatever> insert_node(PositionInParent, fio);
+
+		//Reinsert
+		insert_node.Insert(remove_this.data, fio, dummy, PositionInParent);
+	}
+	else {
+		
+		//Write to the file
+		Write(fio);
+	}
 }
 
 /*------------------------------------------------------------------------------
@@ -344,6 +505,7 @@ long Tree <Whatever> :: GetOperation () {
 
 	return operation;
 }
+
 /*------------------------------------------------------------------------------
 Function Name:		IncrementCost	
 Purpose:		Increments the value of the Tree<Whatever>::cost 
@@ -388,7 +550,10 @@ Output			the root is moved to the end of the datafile.
 ------------------------------------------------------------------------------*/
 template <class Whatever>
 void Tree <Whatever> :: ResetRoot () {
-        /* YOUR CODE GOES HERE */       
+
+	// seek to the end of datafile and set equal to the root
+	fio->seekp(0,ios::end);
+	root = fio->tellp();
 }
 
 /*------------------------------------------------------------------------------
@@ -486,6 +651,9 @@ Result:			no return value. TNode is read from datafile to
 template <class Whatever>
 void TNode<Whatever> :: Read (const offset & position, fstream * fio) {
 	
+	// tree is accessed
+	Tree<Whatever>::IncrementCost();
+
 	//get current position
 	fio->seekg(position);
 
@@ -557,6 +725,9 @@ Result:			No return value.
 ------------------------------------------------------------------------------*/
 template <class Whatever>
 void TNode<Whatever> :: Write (fstream * fio) const {
+
+	// tree is accessed
+	Tree<Whatever>::IncrementCost();
 
 	//get current position
 	fio->seekp(this_position);
@@ -644,6 +815,13 @@ Tree<Whatever> :: ~Tree (void)
 	//delete pointer to file
 	delete fio;
 	tree_count--;
+
+	//check if all the nodes have been deleted
+	if (occupancy == 0) {
+
+		//point the root to the end of file
+		ResetRoot();
+	}
 
 }
 

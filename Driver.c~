@@ -47,7 +47,7 @@ int main (int argc, char * const * argv) {
         
         SymTab<UCSDStudent>::Set_Debug_Off ();
 
-        while ((option = getopt (argc, argv, "x")) != EOF) {
+    while ((option = getopt (argc, argv, "x")) != EOF) {
 
         switch (option) {
                 case 'x': SymTab<UCSDStudent>::Set_Debug_On ();
@@ -64,86 +64,86 @@ int main (int argc, char * const * argv) {
                         << "(f)file, (l)ookup, (r)emove, (w)rite):  ";
                 *is >> command;
 
-		/* check for EOF reading from file */
-		if (readingFrom == FROM_FILE) {
-			if (!*is) {
-				
-				delete is;
-				delete os;
-				
-				/* reset input and output from keyboard
-				 * to screen */
-				is = &cin;
-				os = &cout;
-				readingFrom = FROM_KEYBOARD;
-			}
-		}
-
-                switch (command) {
-
-                case 'f': {
-                        *os << "Please enter name of ASCII file:  ";
-                        *is >> buffer;  // formatted input
-
+			/* check for EOF reading from file */
 			if (readingFrom == FROM_FILE) {
-				delete is;
-				delete os;
+				if (!*is) {
+					
+					delete is;
+					delete os;
+					
+					/* reset input and output from keyboard
+					* to screen */
+					is = &cin;
+					os = &cout;
+					readingFrom = FROM_KEYBOARD;
+				}
 			}
 
-			/* read from file */
-			is = new ifstream (buffer);
-			os = new ofstream ("/dev/null");
-			readingFrom = FROM_FILE;
+				switch (command) {
 
-                        break;
-                }
-                case 'i': {
-                        *os << "Please enter UCSD student name to insert:  ";
-                        *is >> buffer;  // formatted input
+					case 'f': {
+							*os << "Please enter name of ASCII file:  ";
+							*is >> buffer;  // formatted input
 
-                        *os << "Please enter UCSD student number:  ";
-                        *is >> number;
+					if (readingFrom == FROM_FILE) {
+						delete is;
+						delete os;
+					}
 
-                        UCSDStudent stu (buffer, number);
+					/* read from file */
+					is = new ifstream (buffer);
+					os = new ofstream ("/dev/null");
+					readingFrom = FROM_FILE;
 
-                        // create student and place in symbol table
-                        ST.Insert (stu);
-                        break;
-                }
-                case 'l': { 
-                        unsigned long found;    // whether found or not
+							break;
+					}
+					case 'i': {
+							*os << "Please enter UCSD student name to insert:  ";
+							*is >> buffer;  // formatted input
 
-                        *os << "Please enter UCSD student name to lookup:  ";
-                        *is >> buffer;  // formatted input
+							*os << "Please enter UCSD student number:  ";
+							*is >> number;
 
-                        UCSDStudent stu (buffer, 0);
-                        found = ST.Lookup (stu);
-                        
-                        if (found)
-                                cout << "Student found!!!\n" << stu << "\n";
-                        else
-                                cout << "student " << buffer << " not there!\n";
-                        break;
-                        }
-                case 'r': { 
-                        unsigned long removed;
+							UCSDStudent stu (buffer, number);
 
-                        *os << "Please enter UCSD student name to remove:  ";
-                        *is >> buffer;  // formatted input
+							// create student and place in symbol table
+							ST.Insert (stu);
+							break;
+					}
+					case 'l': { 
+							unsigned long found;    // whether found or not
 
-                        UCSDStudent stu (buffer, 0);
-                        removed = ST.Remove(stu);
+							*os << "Please enter UCSD student name to lookup:  ";
+							*is >> buffer;  // formatted input
 
-                        if (removed)
-                                cout << "Student removed!!!\n" << stu << "\n";
-                        else
-                                cout << "student " << buffer << " not there!\n";
-                        break;
-                }
-                case 'w':
-                        ST.Write (cout << "The Symbol Table contains:\n");
-                }
-        }
+							UCSDStudent stu (buffer, 0);
+							found = ST.Lookup (stu);
+							
+							if (found)
+									cout << "Student found!!!\n" << stu << "\n";
+							else
+									cout << "student " << buffer << " not there!\n";
+							break;
+							}
+					case 'r': { 
+							unsigned long removed;
+
+							*os << "Please enter UCSD student name to remove:  ";
+							*is >> buffer;  // formatted input
+
+							UCSDStudent stu (buffer, 0);
+							removed = ST.Remove(stu);
+
+							if (removed)
+									cout << "Student removed!!!\n" << stu << "\n";
+							else
+									cout << "student " << buffer << " not there!\n";
+							break;
+					}
+					case 'w':
+							ST.Write (cout << "The Symbol Table contains:\n");
+					}
+		}
 	
 
         ST.Write (cout << "\nFinal Symbol Table:\n");
