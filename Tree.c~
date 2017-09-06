@@ -265,7 +265,57 @@ Output			The heights and balances of the current node are updated
 template <class Whatever>
 void TNode<Whatever> :: SetHeightAndBalance (fstream * fio,
 	offset & PositionInParent) {
-	/*TODO*/
+	int left_Height;	//Left node height
+	int right_Height;	//Right node height
+
+	TNode<Whatever> TNode_right(right, fio); //Get right TNode
+	TNode<Whatever> TNode_left(left, fio);	//Get left TNode
+
+	//Check if there is a left child
+	if (left == 0) { 
+		
+		left_Height = -1;
+	}
+	else {
+		
+		left_Height = TNode_left.height;
+	}
+
+	//Check if there is a right child
+	if (right == 0) { 
+		
+		right_Height = -1;
+	}
+	else {
+		
+		right_Height = TNode_right.height;
+	}
+
+	//Set height
+	if (left_Height > right_Height) {
+		
+		height = left_Height + 1;
+	}
+	else {
+		
+		height = right_Height + 1;
+	}
+
+	//Set balance
+	balance = left_Height - right_Height;
+
+	//Check to see if the Tree need to be rebalanced
+/*	if (abs(balance) > THRESHOLD) {
+		
+		//TNode containing the data that identifies the element to remove
+		TNode<Whatever> remove_this(fio, *this);
+
+		//Remove to put in the correct place
+		Remove(*this, PositionInParent, true);
+
+			//Reinsert
+			PositionInParent.Insert(remove_this.data, PositionInParent);
+		} */
 }
 
 /*------------------------------------------------------------------------------

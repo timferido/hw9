@@ -37,6 +37,9 @@ int main (int argc, char * const * argv) {
         long number;
         char option;
         
+		istream * is = &cin;
+		ostream * os = &cout;
+
         SymTab<UCSDStudent>::Set_Debug_Off ();
 
         while ((option = getopt (argc, argv, "x")) != EOF) {
@@ -57,6 +60,7 @@ int main (int argc, char * const * argv) {
                 cin >> command;
 
                 switch (command) {
+				case 'f': 
 
                 case 'i': {
                         cout << "Please enter UCSD student name to insert:  ";
