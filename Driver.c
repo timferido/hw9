@@ -82,7 +82,7 @@ int main (int argc, char * const * argv) {
 			switch (command) {
 
 				case 'f': {
-						*os << "Please enter name of ASCII file:  ";
+						*os << "Please enter file name for commands:  ";
 						*is >> buffer;  // formatted input
 
 				if (readingFrom == FROM_FILE) {

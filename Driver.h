@@ -50,10 +50,7 @@ class UCSDStudent {
 
 public:
 
-	UCSDStudent () : studentnum (0) {
-
-		memset(name, '\0', sizeof(name));
-	}
+	UCSDStudent () {}
 
 	/*----------------------------------------------------------------------
 	Function Name:		UCSDStudent
@@ -82,6 +79,7 @@ public:
 		memset (name, '\0', sizeof(name));
 		strcpy (name, student.name);
 		studentnum = student.studentnum;
+
 	}
 	
 	/*----------------------------------------------------------------------

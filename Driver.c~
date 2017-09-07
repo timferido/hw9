@@ -60,7 +60,7 @@ int main (int argc, char * const * argv) {
 
         while (cin) {
                 command = NULL;         // reset command each time in loop
-                cout << "Please enter a command ((f)file, (i)nsert, "
+                cout << "Please enter a command ((f)ile, (i)nsert, "
                      << "(l)ookup, (r)emove, (w)rite):  ";
                 *is >> command;
 
@@ -82,7 +82,7 @@ int main (int argc, char * const * argv) {
 			switch (command) {
 
 				case 'f': {
-						*os << "Please enter name of ASCII file:  ";
+						*os << "Please enter file name for commands:  ";
 						*is >> buffer;  // formatted input
 
 				if (readingFrom == FROM_FILE) {

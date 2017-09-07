@@ -50,8 +50,7 @@ class UCSDStudent {
 
 public:
 
-	UCSDStudent () : name (""), studentnum (0) {
-	}
+	UCSDStudent () {}
 
 	/*----------------------------------------------------------------------
 	Function Name:		UCSDStudent
@@ -76,11 +75,14 @@ public:
 						val: Expected to be the student number.
 	Result:				No return studentnum.
 	----------------------------------------------------------------------*/
+	/*
 	UCSDStudent (const UCSDStudent & student) {
 		memset (name, '\0', sizeof(name));
 		strcpy (name, student.name);
 		studentnum = student.studentnum;
+
 	}
+	*/
 	
 	/*----------------------------------------------------------------------
 	Function Name:		(overload) const char *

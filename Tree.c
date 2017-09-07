@@ -277,17 +277,26 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 		//Has two children
 		else if (left != 0 && right != 0) {
 
+			TNode<Whatever> success(elementTNode.data);
+
 			// create node to call replace and remove node from
 			TNode<Whatever> readRightNode(right, fio);
 			
 			//Find replacement are switch
-			readRightNode.ReplaceAndRemoveMin(*this, fio, right);
+			readRightNode.ReplaceAndRemoveMin(success, fio, right);
+
+			data = success.data;
 
 			//Fix height and balance if not from SHAB
 			if (fromSHB == false) {
 
 				SetHeightAndBalance(fio, PositionInParent);
-			} 
+
+			}else {
+
+				Write(fio);
+
+			}
 		}
 
 		//TNode has one child
