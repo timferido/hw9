@@ -236,9 +236,6 @@ void TNode<Whatever> :: ReplaceAndRemoveMin (TNode<Whatever> & targetTNode,
 		else
 			PositionInParent = 0;
 
-		//Delete the TNode
-		//TODO might need to call delete, did not encode works
-		//delete this;
 	}
 }
 
@@ -261,6 +258,9 @@ template <class Whatever>
 unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 	fstream * fio, long & occupancy, offset & PositionInParent,
 	long fromSHB) {
+
+	// success indicator
+	long retval = 0;
 
 	//Base case: found node
 	if (elementTNode.data == data) {
@@ -313,7 +313,7 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 			}
 		}
 
-		return true;
+		return TRUE;
 	}
 
 	//Check to go left or right
@@ -326,13 +326,13 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 				//create node to call remove from left
 				TNode<Whatever> readLeftNode(left, fio);
 
-				readLeftNode.Remove(elementTNode, fio, occupancy, left, 
-					fromSHB);
+				retval=readLeftNode.Remove(elementTNode, fio, 
+					occupancy, left, fromSHB);
 			}
 			//Not found
 			else {
 				
-				return false;
+				//return false;
 			}
 		}
 		
@@ -344,13 +344,13 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 				// create right node to remove from
 				TNode<Whatever> readRightNode(right, fio);
 
-				readRightNode.Remove(elementTNode, fio, occupancy, right,
-					fromSHB);
+				retval=readRightNode.Remove(elementTNode, fio, 
+					occupancy, right, fromSHB);
 			}
 			//Not found
 			else {
 				
-				return false;	
+				//return false;	
 			}
 		}
 	}
@@ -360,7 +360,7 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 		SetHeightAndBalance(fio, PositionInParent);
 	}
 
-	return true;
+	return retval;
 }
 	
 /*------------------------------------------------------------------------------
@@ -389,18 +389,18 @@ unsigned long Tree<Whatever> :: Remove (Whatever & element) {
 	//Not empty so check to find and remove
 	else {
 
-		//TNode containing the data that identifies the element to remove
+		//TNode containing data that identifies the element to remove
 		TNode<Whatever> readRootNode(root, fio);
 
 		//Create node to delete
 		TNode<Whatever> remove_node(element);
 
-		return_value = readRootNode.Remove(remove_node, fio, occupancy, root
-			, false);
+		return_value = readRootNode.Remove(remove_node, fio, occupancy, 
+			root, false);
 		
 		element = remove_node.data;
 
-		//return data and if true check occupancy == 1 to put pointer end of 
+		//return data if true check occupancy == 1 to put pointer end of
 		//datafile
 		if (return_value) {
 			occupancy--;
@@ -431,8 +431,6 @@ void TNode<Whatever> :: SetHeightAndBalance (fstream * fio,
 
 	int left_Height;	//Left node height
 	int right_Height;	//Right node height
-
-	
 
 	//Check if there is a left child
 	if (left == 0) { 
@@ -475,7 +473,7 @@ void TNode<Whatever> :: SetHeightAndBalance (fstream * fio,
 		// create long occupancy dummy
 		long dummy = 0;
 		
-		//TNode containing the data that identifies the element to remove
+		//TNode containing the data that identifies element to remove
 		//TNode<Whatever> remove_this(PositionInParent, fio);
 		TNode<Whatever> remove_this(data);
 
@@ -486,7 +484,7 @@ void TNode<Whatever> :: SetHeightAndBalance (fstream * fio,
 		TNode<Whatever> insert_node(PositionInParent, fio);
 
 		//Reinsert
-		insert_node.Insert(remove_this.data, fio, dummy, PositionInParent);
+		insert_node.Insert(remove_this.data,fio,dummy,PositionInParent);
 	}
 	else {
 		
@@ -665,14 +663,14 @@ unsigned long Tree<Whatever> :: Lookup (Whatever & element) const {
 }
 
 /*----------------------------------------------------------------------
-Function Name:         Lookup
-Purpose:               Called when searching for a TNode in the tree.
-Description:           This function exists to search for a TNode in the
-						tree. This function is called from Tree's insert.
-Input:                 element: expected to be the data stored in the TNode.
-						They must be of the same type as the rest of the 
-						object present in the tree.
-Result:                Returns true or false indicating success of look up.
+Function Name:		Lookup
+Purpose:		Called when searching for a TNode in the tree.
+Description:		This function exists to search for a TNode in the
+			tree. This function is called from Tree's insert.
+Input:			element: expected to be the data stored in the TNode.
+			They must be of the same type as the rest of the 
+			object present in the tree.
+Result:			Returns true or false indicating success of look up.
 ----------------------------------------------------------------------*/
 template<class Whatever>
 unsigned long TNode<Whatever> :: Lookup (Whatever & element,
@@ -707,7 +705,7 @@ unsigned long TNode<Whatever> :: Lookup (Whatever & element,
 
 				TNode<Whatever> readRightNode(right, fio);
 				
-				return readRightNode.Lookup(element, fio, right);
+				return readRightNode.Lookup(element,fio,right);
 			}
 		}
 
