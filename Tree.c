@@ -119,6 +119,8 @@ struct  TNode {
 	
 	unsigned long Insert (Whatever &, fstream *, long &, offset &);
 	// optional recursive Lookup declaration would go here
+	unsigned long Lookup (Whatever &, fstream *, 
+		const offset &) const;
 	void Read (const offset &, fstream *);	// read node from disk
 	unsigned long Remove (TNode<Whatever> &, fstream *, long &, offset &,
 		long fromSHB = FALSE);
@@ -231,6 +233,8 @@ void TNode<Whatever> :: ReplaceAndRemoveMin (TNode<Whatever> & targetTNode,
 		//Take care of the childern
 		if (right)
 			PositionInParent = right;
+		else
+			PositionInParent = 0;
 
 		//Delete the TNode
 		//TODO might need to call delete, did not encode works
@@ -274,17 +278,16 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 		else if (left != 0 && right != 0) {
 
 			// create node to call replace and remove node from
-			TNode<Whatever> rightNode(right, fio);
+			TNode<Whatever> readRightNode(right, fio);
 			
 			//Find replacement are switch
-			rightNode.ReplaceAndRemoveMin(*this, fio, PositionInParent);
+			readRightNode.ReplaceAndRemoveMin(*this, fio, right);
 
 			//Fix height and balance if not from SHAB
 			if (fromSHB == false) {
 
 				SetHeightAndBalance(fio, PositionInParent);
-			}
-
+			} 
 		}
 
 		//TNode has one child
@@ -301,9 +304,6 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 			}
 		}
 
-		//delete this TNode
-		//delete this;
-
 		return true;
 	}
 
@@ -315,9 +315,9 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 			if (left != 0) { 
 
 				//create node to call remove from left
-				TNode<Whatever> leftNode(left, fio);
+				TNode<Whatever> readLeftNode(left, fio);
 
-				leftNode.Remove(elementTNode, fio, occupancy, left, 
+				readLeftNode.Remove(elementTNode, fio, occupancy, left, 
 					fromSHB);
 			}
 			//Not found
@@ -333,9 +333,9 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 			if (right != 0) {
 			
 				// create right node to remove from
-				TNode<Whatever> rightNode(right, fio);
+				TNode<Whatever> readRightNode(right, fio);
 
-				rightNode.Remove(elementTNode, fio, occupancy, right,
+				readRightNode.Remove(elementTNode, fio, occupancy, right,
 					fromSHB);
 			}
 			//Not found
@@ -636,8 +636,75 @@ Output			true or false indicating success of look up.
 ------------------------------------------------------------------------------*/
 template <class Whatever>
 unsigned long Tree<Whatever> :: Lookup (Whatever & element) const {
-	/* YOUR CODE GOES HERE */
-	return 0;
+
+	// one more operation
+	IncrementOperation();
+
+	//Check if tree is empty
+	if (occupancy == 0) {
+		
+		return false;
+	}
+
+	//Not empty: Check the rest of the tree
+	else {
+		
+		TNode<Whatever> readRootNode(root, fio);
+
+		return readRootNode.Lookup(element, fio, root);
+	}
+}
+
+/*----------------------------------------------------------------------
+Function Name:         Lookup
+Purpose:               Called when searching for a TNode in the tree.
+Description:           This function exists to search for a TNode in the
+						tree. This function is called from Tree's insert.
+Input:                 element: expected to be the data stored in the TNode.
+						They must be of the same type as the rest of the 
+						object present in the tree.
+Result:                Returns true or false indicating success of look up.
+----------------------------------------------------------------------*/
+template<class Whatever>
+unsigned long TNode<Whatever> :: Lookup (Whatever & element,
+	fstream * fio, const offset & PositionInParent) const {
+
+		//Check if found
+		if (element == data) {
+		
+			element = data;
+
+			return true;
+		}	
+
+		//Find in the tree 
+		//Check left tree
+		else if(element < data) {
+			
+			//Check if there is a left TNode before using it
+			if (left != 0) {
+				
+				TNode<Whatever> readLeftNode(left, fio);
+
+				return readLeftNode.Lookup(element, fio, left);
+			}
+		}
+
+		//Check right tree
+		else if(data < element) {
+			
+			//Check if there is a right TNode before using it
+			if (right != 0) {
+
+				TNode<Whatever> readRightNode(right, fio);
+				
+				return readRightNode.Lookup(element, fio, right);
+			}
+		}
+
+		//Not found
+		return false;
+
 }
 
 /*------------------------------------------------------------------------------

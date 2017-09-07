@@ -1,0 +1,36 @@
+[Tree 1 - Allocating]
+Initial Symbol Table:
+Tree 1:
+occupancy is 2 elements.
+[Cost Increment (Disk Access): Reading AAAAAAA]
+at height:  :1 with balance:  -1  name:  AAAAAAA with studentnum:  32767
+[Cost Increment (Disk Access): Reading ZZZZZZZ]
+at height:  :0 with balance:  0  name:  ZZZZZZZ with studentnum:  65535
+Please enter a command ((f)ile, (i)nsert, (l)ookup, (r)emove, (w)rite):  Please enter UCSD student name to insert:  Please enter UCSD student number:  [Cost Increment (Disk Access): Reading AAAAAAA]
+[Cost Increment (Disk Access): Reading ZZZZZZZ]
+[Cost Increment (Disk Access): Writing Tracker]
+[Cost Increment (Disk Access): Reading Tracker]
+[Cost Increment (Disk Access): Writing ZZZZZZZ]
+[Cost Increment (Disk Access): Reading ZZZZZZZ]
+[Cost Increment (Disk Access): Writing AAAAAAA]
+Please enter a command ((f)ile, (i)nsert, (l)ookup, (r)emove, (w)rite):  Please enter UCSD student name to remove:  [Cost Increment (Disk Access): Reading AAAAAAA]
+[Cost Increment (Disk Access): Reading ZZZZZZZ]
+[Cost Increment (Disk Access): Reading Tracker]
+[Cost Increment (Disk Access): Writing ZZZZZZZ]
+[Cost Increment (Disk Access): Reading ZZZZZZZ]
+[Cost Increment (Disk Access): Writing AAAAAAA]
+Student removed!!!
+name:  Tracker with studentnum:  65535
+Please enter a command ((f)ile, (i)nsert, (l)ookup, (r)emove, (w)rite):  
+Final Symbol Table:
+Tree 1:
+occupancy is 2 elements.
+[Cost Increment (Disk Access): Reading AAAAAAA]
+at height:  :1 with balance:  -1  name:  AAAAAAA with studentnum:  32767
+[Cost Increment (Disk Access): Reading ZZZZZZZ]
+at height:  :0 with balance:  0  name:  ZZZZZZZ with studentnum:  65535
+
+Cost of operations:    13 tree accesses
+Number of operations:  2
+Average cost:          6.5 tree accesses/operation
+[Tree 1 - Deallocating]

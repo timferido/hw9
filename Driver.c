@@ -45,7 +45,7 @@ int main (int argc, char * const * argv) {
 	ostream * os = &cout;
 	int readingFrom = FROM_KEYBOARD;
         
-        SymTab<UCSDStudent>::Set_Debug_Off ();
+    SymTab<UCSDStudent>::Set_Debug_Off ();
 
     while ((option = getopt (argc, argv, "x")) != EOF) {
 
@@ -60,8 +60,8 @@ int main (int argc, char * const * argv) {
 
         while (cin) {
                 command = NULL;         // reset command each time in loop
-                cout << "Please enter a command ((i)nsert, "
-                        << "(f)file, (l)ookup, (r)emove, (w)rite):  ";
+                cout << "Please enter a command ((f)ile, (i)nsert, "
+                     << "(l)ookup, (r)emove, (w)rite):  ";
                 *is >> command;
 
 			/* check for EOF reading from file */
@@ -79,70 +79,70 @@ int main (int argc, char * const * argv) {
 				}
 			}
 
-				switch (command) {
+			switch (command) {
 
-					case 'f': {
-							*os << "Please enter name of ASCII file:  ";
-							*is >> buffer;  // formatted input
+				case 'f': {
+						*os << "Please enter name of ASCII file:  ";
+						*is >> buffer;  // formatted input
 
-					if (readingFrom == FROM_FILE) {
-						delete is;
-						delete os;
-					}
+				if (readingFrom == FROM_FILE) {
+					delete is;
+					delete os;
+				}
 
-					/* read from file */
-					is = new ifstream (buffer);
-					os = new ofstream ("/dev/null");
-					readingFrom = FROM_FILE;
+				/* read from file */
+				is = new ifstream (buffer);
+				os = new ofstream ("/dev/null");
+				readingFrom = FROM_FILE;
 
-							break;
-					}
-					case 'i': {
-							*os << "Please enter UCSD student name to insert:  ";
-							*is >> buffer;  // formatted input
+						break;
+				}
+				case 'i': {
+						*os << "Please enter UCSD student name to insert:  ";
+						*is >> buffer;  // formatted input
 
-							*os << "Please enter UCSD student number:  ";
-							*is >> number;
+						*os << "Please enter UCSD student number:  ";
+						*is >> number;
 
-							UCSDStudent stu (buffer, number);
+						UCSDStudent stu (buffer, number);
 
-							// create student and place in symbol table
-							ST.Insert (stu);
-							break;
-					}
-					case 'l': { 
-							unsigned long found;    // whether found or not
+						// create student and place in symbol table
+						ST.Insert (stu);
+						break;
+				}
+				case 'l': { 
+						unsigned long found;    // whether found or not
 
-							*os << "Please enter UCSD student name to lookup:  ";
-							*is >> buffer;  // formatted input
+						*os << "Please enter UCSD student name to lookup:  ";
+						*is >> buffer;  // formatted input
 
-							UCSDStudent stu (buffer, 0);
-							found = ST.Lookup (stu);
-							
-							if (found)
-									cout << "Student found!!!\n" << stu << "\n";
-							else
-									cout << "student " << buffer << " not there!\n";
-							break;
-							}
-					case 'r': { 
-							unsigned long removed;
+						UCSDStudent stu (buffer, 0);
+						found = ST.Lookup (stu);
+						
+						if (found)
+								cout << "Student found!!!\n" << stu << "\n";
+						else
+								cout << "student " << buffer << " not there!\n";
+						break;
+						}
+				case 'r': { 
+						unsigned long removed;
 
-							*os << "Please enter UCSD student name to remove:  ";
-							*is >> buffer;  // formatted input
+						*os << "Please enter UCSD student name to remove:  ";
+						*is >> buffer;  // formatted input
 
-							UCSDStudent stu (buffer, 0);
-							removed = ST.Remove(stu);
+						UCSDStudent stu (buffer, 0);
+						removed = ST.Remove(stu);
 
-							if (removed)
-									cout << "Student removed!!!\n" << stu << "\n";
-							else
-									cout << "student " << buffer << " not there!\n";
-							break;
-					}
-					case 'w':
-							ST.Write (cout << "The Symbol Table contains:\n");
-					}
+						if (removed)
+								cout << "Student removed!!!\n" << stu << "\n";
+						else
+								cout << "student " << buffer << " not there!\n";
+						break;
+				}
+				case 'w':
+						ST.Write (cout << "The Symbol Table contains:\n");
+				}
 		}
 	
 
@@ -150,14 +150,14 @@ int main (int argc, char * const * argv) {
 
 		//Displays information about the Tree
 		if (ST.GetOperation() != 0) {
-			cout << "\nCost of operations: ";
+			cout << "\nCost of operations:    ";
 			cout << ST.GetCost();
 			cout << " tree accesses";
 
-			cout << "\nNumber of operations: ";
+			cout << "\nNumber of operations:  ";
 			cout << ST.GetOperation();
 
-			cout << "\nAverage cost: ";
+			cout << "\nAverage cost:          ";
 			cout << (((float)(ST.GetCost()))/(ST.GetOperation()));
 			cout << " tree accesses/operation\n";
 		}
