@@ -329,11 +329,6 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 				retval=readLeftNode.Remove(elementTNode, fio, 
 					occupancy, left, fromSHB);
 			}
-			//Not found
-			else {
-				
-				//return false;
-			}
 		}
 		
 		//Call Remove from right
@@ -346,11 +341,6 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 
 				retval=readRightNode.Remove(elementTNode, fio, 
 					occupancy, right, fromSHB);
-			}
-			//Not found
-			else {
-				
-				//return false;	
 			}
 		}
 	}
