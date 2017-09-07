@@ -266,7 +266,7 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 
 		//Check if leaf
 		if (left == 0 && right == 0) {
-			
+
 			PositionInParent = 0;	//Set TNode to 0
 		}
 		
@@ -285,7 +285,6 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 				SetHeightAndBalance(fio, PositionInParent);
 			}
 
-			return true;
 		}
 
 		//TNode has one child
@@ -303,7 +302,7 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 		}
 
 		//delete this TNode
-		delete this;
+		//delete this;
 
 		return true;
 	}
@@ -318,7 +317,7 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 				//create node to call remove from left
 				TNode<Whatever> leftNode(left, fio);
 
-				leftNode.Remove(elementTNode, fio, occupancy, PositionInParent, 
+				leftNode.Remove(elementTNode, fio, occupancy, left, 
 					fromSHB);
 			}
 			//Not found
@@ -336,7 +335,7 @@ unsigned long TNode<Whatever> :: Remove (TNode<Whatever> & elementTNode,
 				// create right node to remove from
 				TNode<Whatever> rightNode(right, fio);
 
-				rightNode.Remove(elementTNode, fio, occupancy, PositionInParent,
+				rightNode.Remove(elementTNode, fio, occupancy, right,
 					fromSHB);
 			}
 			//Not found
@@ -374,7 +373,7 @@ unsigned long Tree<Whatever> :: Remove (Whatever & element) {
 
 	//Check if tree is empty
 	if (occupancy == 0) {
-		
+
 		return false;
 	}
 
@@ -389,9 +388,17 @@ unsigned long Tree<Whatever> :: Remove (Whatever & element) {
 
 		return_value = readRootNode.Remove(remove_node, fio, occupancy, root
 			, false);
-			
-		//return data
+		
 		element = remove_node.data;
+
+		//return data and if true check occupancy == 1 to put pointer end of 
+		//datafile
+		if (return_value) {
+			occupancy--;
+		}
+
+		if (occupancy == 0) 
+			ResetRoot();
 
 		return return_value;
 	}
@@ -816,12 +823,6 @@ Tree<Whatever> :: ~Tree (void)
 	delete fio;
 	tree_count--;
 
-	//check if all the nodes have been deleted
-	if (occupancy == 0) {
-
-		//point the root to the end of file
-		ResetRoot();
-	}
 
 }
 
